@@ -26,7 +26,7 @@
         <section class="step active" id="email-step">
             <h3>Welcome back!</h3>
             <form method="post" id="email-form">
-                <label for="email">Email</label><br>
+                <label for="email">Email:</label><br>
                 <input id="email" name="email" type="email" placeholder="you@example.com" required>
                 <p class="error" id="email-error"></p>
                 <button type="submit">Continue</button>
@@ -38,7 +38,7 @@
             <p>Parent Account</p>
             <h3>Welcome back, <span class="user-name-parent" id="user-name-parent"></span></h3>
             <form method="post" id="pswd-form">
-                <label for="password">Password</label><br>
+                <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" placeholder="Enter your password" required>
                 <p class="error" id="password-error"></p>
                 <button type="submit">Sign in</button>
@@ -51,7 +51,7 @@
             <p>Child Account</p>
             <h3>Welcome back, <span class="user-name-child" id="user-name-child"></span></h3>
             <form method="post" id="pin-form">
-                <label for="pin">Password</label><br>
+                <label for="pin">Pin:</label><br>
                 <input id="pin" name="pin" type="password" placeholder="Enter your pin" required>
                 <p class="error" id="pin-error"></p>
                 <button type="submit">Sign in</button>
@@ -65,7 +65,7 @@
             <h3>Verify it's you.</h3>
             <p class="subheading">Enter the verification code sent to your email.</p>
             <form action="post" id="mfa-form">
-                <label for="mfa-code">Verification code</label><br>
+                <label for="mfa-code">Verification code:</label><br>
                 <input id="mfa-code" name="mfa-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required>
                 <p class="error" id="mfa-error"></p>
                 <button type="submit">Verify</button>
