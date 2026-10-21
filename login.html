@@ -25,16 +25,24 @@
 
         <section class="step active" id="email-step">
             <h3>Welcome back!</h3>
-            <label for="email">Email</label><br>
-            <input id="email" name="email" type="email" placeholder="you@example.com" required>
-            <p class="error" id="email-error"></p>
-            <button type="submit">Continue</button>
+            <form method="post" id="email-form">
+                <label for="email">Email</label><br>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                <p class="error" id="email-error"></p>
+                <button type="submit">Continue</button>
+            </form>
         </section>
         
         <section class="step" id="pwsd-step" hidden>
             <p><span class="acc-type" id="acc-type"></span> Account</p>
             <h3>Welcome back, <span class="user-name" id="user-name"></span></h3>
-            <label for="password">Password</label><br>
+            <form method="post" id="pswd-form">
+                <label for="password">Password</label><br>
+                <input id="password" name="password" type="password" placeholder="Enter your password" required>
+                <p class="error" id="password-error"></p>
+                <button type="submit">Sign in</button>
+            </form>
+            <p class="forgot"><a href="#">Forgot password?</a></p>
         </section>
         
         <div class="sign-up">
