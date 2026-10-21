@@ -36,7 +36,7 @@
         <section class="step" id="pwsd-step" hidden>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Parent Account</p>
-            <h3>Welcome back, <span class="user-name" id="user-name"></span></h3>
+            <h3>Welcome back, <span class="user-name-parent" id="user-name-parent"></span></h3>
             <form method="post" id="pswd-form">
                 <label for="password">Password</label><br>
                 <input id="password" name="password" type="password" placeholder="Enter your password" required>
@@ -46,10 +46,10 @@
             <p class="forgot"><a href="#">Forgot password?</a></p>
         </section>
 
-        <section class="step" id="pin-step">
+        <section class="step" id="pin-step" hidden>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Child Account</p>
-            <h3>Welcome back, <span class="user-name" id="user-name"></span></h3>
+            <h3>Welcome back, <span class="user-name-child" id="user-name-child"></span></h3>
             <form method="post" id="pin-form">
                 <label for="pin">Password</label><br>
                 <input id="pin" name="pin" type="password" placeholder="Enter your pin" required>
@@ -59,15 +59,23 @@
             <p class="forgot">Forgot pin? Contact your parents for the pin.</p>
         </section>
         
-        <section class="step" id="mfa-step">
+        <section class="step" id="mfa-step" hidden>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Parent Acocunt</p>
             <h3>Verify it's you.</h3>
             <p class="subheading">Enter the verification code sent to your email.</p>
-            <label for="mfa-code">Verification code</label><br>
-            <input id="mfa-code" name="mfa-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required>
-            <p class="error" id="mfa-error"></p>
-            <button type="submit">Verify</button>
+            <form action="post" id="mfa-form">
+                <label for="mfa-code">Verification code</label><br>
+                <input id="mfa-code" name="mfa-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required>
+                <p class="error" id="mfa-error"></p>
+                <button type="submit">Verify</button>
+            </form>
+        </section>
+
+        <section class="step" id="approval-step" hidden>
+            <button class="back-button" type="button" data-back="email">← Back</button>
+            <p>Child Acocunt</p>
+            <h2>Waiting for parent approval...</h2>
         </section>
 
         <div class="sign-up">
