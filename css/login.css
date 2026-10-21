@@ -1,0 +1,15 @@
+body{
+    margin:0;
+    background-color: white;
+}
+
+header{
+    background-color: white;
+    margin-top: 3%;
+    margin-left: 5%;
+}
+
+header h3{
+    font-family: "Sniglet";
+    color:rgb(2, 2, 153);
+}
