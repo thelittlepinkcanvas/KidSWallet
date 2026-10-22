@@ -1,1 +1,1 @@
-# KidzWallet
+# KidSWallet
