@@ -42,3 +42,45 @@ ul{
     color:red;
 }
 
+h1{
+    margin-left: 5%;
+    margin-top: 3%;
+}
+
+.dashboard{
+    width:90%;
+    margin-top: 3%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cont1{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    border-radius: 24px;
+    width:60%;
+    height: auto;
+    padding:3%;
+}
+
+.cont1-head{
+    color:rgb(2, 2, 153);
+    display: flex;
+    justify-content: space-between;
+}
+
+.cont1-head h3{
+    font-size: 24px;
+    margin-top: 2%;
+}
+
+.addChild{
+    background-color: rgb(2, 2, 153);
+    color:white;
+    margin-top: 2%;
+    padding:1% 2% 1% 2%;
+    height: 30%;
+    text-align: center;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 14px;
+}
