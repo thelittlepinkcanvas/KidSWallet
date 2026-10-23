@@ -52,17 +52,20 @@ h1{
     margin-top: 3%;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    justify-content: space-between;
+    gap:4px;
 }
 
 .cont1{
     box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
     border-radius: 24px;
-    width:60%;
+    width:58%;
     height: auto;
     padding:3%;
 }
 
-.cont1-head{
+.cont1-head, .cont2-head{
     color:rgb(2, 2, 153);
     display: flex;
     justify-content: space-between;
@@ -96,4 +99,17 @@ h1{
 
 .childName{
     font-weight: bold;
+}
+
+.cont2{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    border-radius: 24px;
+    width:28%;
+    height: auto;
+    padding:3%;
+}
+
+.cont2-head h3{
+    font-size: 24px;
+    margin-top: 4%;
 }
