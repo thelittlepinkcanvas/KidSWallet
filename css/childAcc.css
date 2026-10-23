@@ -73,6 +73,12 @@ button:hover{
     background-color: rgb(86, 86, 245);
 }
 
+#later-btn{
+    background-color: white;
+    border: 1px solid grey;
+    color:black;
+}
+
 .error{
     color:red;
     font-size: 14px;
