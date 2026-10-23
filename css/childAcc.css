@@ -56,6 +56,10 @@ input:active{
     border: 2px solid black;
 }
 
+#btn-cont{
+    margin-top: 5%;
+}
+
 button{
     margin-top: 2%;
     padding:3%;
