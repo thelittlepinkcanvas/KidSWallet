@@ -138,7 +138,7 @@ h1{
 .right-cont{
     width:37%;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: column;
     gap:12px;
     margin-left: 3%;
@@ -162,7 +162,37 @@ h1{
     margin-top: -2%;
 }
 
-.spending{
+.cont4{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+    border-radius: 24px;
+    width:100%;
+    height: auto;
+    padding:5%;
+}
+
+.cont4-head{
+    display: flex;
+    justify-content: space-between;
+}
+
+.cont4-head p{
+    margin-top: 7%;
+}
+
+.cont4-head h3{
+    font-size: 24px;
+}
+
+.budget{
+    display: flex;
+    justify-content: space-between;
+}
+
+.budget h3{
     font-size: 18px;
 }
 
+.budget p{
+    margin-top: 6%;
+    color:red;
+}
