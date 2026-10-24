@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidSWallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/child-dashboard.css">
+</head>
+<body>
+    <header>
+        <h3>KidSWallet</h3>
+        <nav>
+            <ul class="nav-links">
+                <li>Home</li>
+                <li>Transactions</li>
+                <li>Your account</li>
+                <li><a href="#" onclick="return confirm('Are you sure you want to log out?')" id="logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+    <h1>Welcome, <span class="user-name-child"></span></h1>
+    <main class="dashboard">
+        <div class="left-cont">
+            <div class="cont1">
+                <div class="cont1-head">
+                    <p>Wallet Balance</p>
+                </div>
+                <div class="balance">
+                    <img src="image/wallet.png">
+                    <h3>RM 50.00</h3>
+                </div>
+            </div>
+            <div class="cont2">
+                <div class="cont2-head">
+                    <h3>Transaction history</h3>
+                </div>
+                <hr>
+                <div class="history">
+                    <div class="desc">
+                        <p id="dates">23/10/2026</p>
+                        <p>Received from March Rosebloom</p>
+                    </div>
+                    <p class="amount">+ RM 20.00</p>
+                </div>
+                <div class="history">
+                    <div class="desc">
+                        <p id="dates">23/10/2026</p>
+                        <p>Paid to rose cafe</p>
+                    </div>
+                    <p class="amount">- RM 10.00</p>
+                </div>
+                <a href="#" class="viewall">View All</a>
+            </div>
+        </div>
+        <div class="right-cont">
+            <div class="cont3">
+                <div class="cont3-head">
+                    <h3>Total spending</h3>
+                    <p>October 2026</p>
+                </div>
+                <div class="spending">
+                   <h2>RM 50.00</h2>
+                </div>
+            </div>
+            <div class="cont4">
+                <div class="cont4-head">
+                    <h3>Monthly Budget</h3>
+                    <p>1/10 - 31/10</p>
+                </div>
+                <hr>
+                <div class="budget">
+                    <h2>RM 150.00</h2>
+                    <p class="spending-left">RM 100.00 left</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

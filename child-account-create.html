@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidSWallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/childAcc.css">
+</head>
+<body>
+    <header>
+        <h3>KidSWallet</h3>
+    </header>
+    <main class="create">
+        <div class="create-head">
+            <h1>Create your child's account</h1>
+        </div>
+
+        <section class="create-body" id="create-body">
+            <form method="post" id="create-form">
+                <label for="childName">Child name:</label><br>
+                <input id="childName" name="ChildName" type="text" placeholder="Example: John Doe" required>
+                <p class="error" id="name-error"></p>
+                <label for="email">Child Email:</label><br>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                <p class="error" id="email-error"></p>
+                <label for="pin">6 digit pin:</label><br>
+                <input id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Enter 6-digit pin" required>
+                <p class="error" id="pin-error"></p>
+                <label for="pin2">Confirm Pin:</label><br>
+                <input id="pin2" name="pin2" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Re-enter pin" required>
+                <p class="error" id="pin2-error"></p>
+                <div id="btn-cont">
+                    <button type="submit">Create</button>
+                    <button type="button" id="later-btn">Later</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+     <script src="js/childAcc.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidSWallet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <header>
+        <h3>KidSWallet</h3>
+    </header>
+    <main class="sign-up">
+        <div class="signup-head">
+            <h1>Sign Up</h1>
+        </div>
+
+        <section class="signup-body" id="signup-body">
+            <form method="post" id="signup-form">
+                <label for="username">Name:</label><br>
+                <input id="username" name="username" type="text" placeholder="Example: John Doe" required>
+                <p class="error" id="name-error"></p>
+                <label for="email">Email:</label><br>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                <p class="error" id="email-error"></p>
+                <label for="phno">Phone Number:</label><br>
+                <input id="phno" name="phno" type="text" placeholder="Enter phone number without dash" required>
+                <p class="error" id="phno-error"></p>
+                <label for="password">Password:</label><br>
+                <input id="password" name="password" type="password" placeholder="Enter your password" required>
+                <p class="error" id="password-error"></p>
+                <label for="password2">Confirm Password:</label><br>
+                <input id="password2" name="password2" type="password" placeholder="Enter your password" required>
+                <p class="error" id="password-error"></p>
+                <button type="submit">Create account</button>
+            </form>
+        </section>
+
+        <div class="sign-in">
+            <p>Already have an account? <a href="login.html">Login here!</a></p>
+        </div>
+
+    </main>
+    <script src="js/register.js"></script>
+</body>
+</html>
