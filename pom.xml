@@ -1,2 +1,1 @@
-git add pom.xml src/main/resources/
-git commit -m "feat: add Maven pom.xml, database schema, and application properties"
+
