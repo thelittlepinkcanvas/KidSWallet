@@ -63,15 +63,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            if ($row && password_verify($password, $row["password_hash"])) {
-                session_regenerate_id(true);
-                $_SESSION["user_id"] = $pending["parent_id"];
-                $_SESSION["role"] = "PARENT";
-                $_SESSION["email"] = $pending["email"];
-                $_SESSION["phone"] = $pending["phone"];
-                unset($_SESSION["pending_login"]);
-                header("Location: parent-dashboard.php");
-                exit;
+            if ($row && password_verify($password, $row["password_hash"])) { //CHANGE THIS WHEN IMPLEMENTING MFA, THIS IS JUST A DEMO
+                $activeStep = "mfa";
             } else {
                 $message = "Incorrect password.";
                 $activeStep = "parent";
@@ -146,6 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3>Welcome back</h3>
             <form method="post" id="email-form">
                 <label for="email">Email:</label><br>
+                <input type="hidden" name="step" value="identify">
                 <input id="email" name="identifier" type="text" placeholder="Enter email or username" required>
                 <p class="error" id="email-error"></p>
                 <button type="submit">Continue</button>
@@ -180,12 +174,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="forgot">Forgot pin? Contact your parents for the pin.</p>
         </section>
         
-        <section class="step" id="mfa-step" hidden>
+       <section class="step <?= $activeStep == 'mfa' ? 'active' : '' ?>" id="mfa-step" <?= $activeStep != 'mfa' ? 'hidden' : '' ?>>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Parent Acocunt</p>
             <h3>Verify it's you.</h3>
             <p class="subheading">Enter the verification code sent to your email.</p>
             <form method="post" id="mfa-form">
+                <input type="hidden" name="step" value="mfa_verify">
                 <label for="mfa-code">Verification code:</label><br>
                 <input id="mfa-code" name="mfa-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required>
                 <p class="error" id="mfa-error"></p>
@@ -201,7 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </section>
 
         <div class="sign-up">
-            <p>No account? <a href="register.html">Sign up here!</a></p>
+            <p>No account? <a href="register.php">Sign up here!</a></p>
         </div>
 
     </main>
