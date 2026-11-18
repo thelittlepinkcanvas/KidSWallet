@@ -1,46 +1,116 @@
+
 <?php
 session_start();
 include 'connection.php';
 
-$message = ""; 
+$message = "";
+$activeStep = "identify";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST["email"] ?? "");
-    $password = $_POST["password"] ?? "";
-
-    //if both fields are empty
-    if ($email == "" || $password == "") {
-        $message = "Please enter email and password.";
-    } else {
-        //select data of user where email matches the user input
-        $sql = "SELECT * FROM `user` WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        //if user is found
-        if ($result->num_rows == 1) {
+    $step = $_POST["step"] ?? "";
+    if ($step == "identify") {
+        $identifier = trim($_POST["identifier"] ?? "");
+        if ($identifier == "") {
+            $message = "Please enter your email or username.";
+        } else {
+            $sql = "SELECT * FROM parents WHERE email = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $identifier);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows == 1) {
+                $row = $result->fetch_assoc();
+                $_SESSION["pending_login"] = [
+                    "role" => "PARENT",
+                    "parent_id" => $row["parent_id"],
+                    "email" => $row["email"],
+                    "name" => $row["name"],
+                    "phone" => $row["phone"]
+                ];
+                $activeStep = "parent";
+            } else{
+                $sql = "SELECT * FROM children WHERE username = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $identifier);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if ($result->num_rows == 1) {
+                    $row = $result->fetch_assoc();
+                    $_SESSION["pending_login"] = [
+                        "role" => "CHILD",
+                        "child_id" => $row["child_id"],
+                        "parent_id" => $row["parent_id"],
+                        "username" => $row["username"]
+                    ];
+                    $activeStep = "child";
+                } else {
+                    $message = "Account not found.";
+                }
+            }
+            $stmt->close();
+        }
+    }
+    elseif ($step == "parent_login") {
+        $password = $_POST["password"] ?? "";
+        $pending = $_SESSION["pending_login"] ?? null;
+        if (!$pending || $pending["role"] !== "PARENT") {
+            $message = "Please enter your account details again.";
+            $activeStep = "identify";
+        } else {
+            $sql = "SELECT password_hash FROM parents WHERE parent_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $pending["parent_id"]);
+            $stmt->execute();
+            $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-
-            //verify password, if password is correct, the data assigned to session variables
-            if (password_verify($password, $row["password"])) {
-                $_SESSION["user_id"] = $row["user_id"];
-                $_SESSION["username"] = $row["username"];
-                $_SESSION["role"] = $row["role"];
-                $_SESSION["email"] = $row["email"];
-                $_SESSION["phone_no"] = $row["phone_no"];
-
-                //alert displayed if login successful and redirect to home.php
-                echo "<script>alert('Login successful.'); window.location.href='home.php';</script>";
+            if ($row && password_verify($password, $row["password_hash"])) {
+                session_regenerate_id(true);
+                $_SESSION["user_id"] = $pending["parent_id"];
+                $_SESSION["role"] = "PARENT";
+                $_SESSION["email"] = $pending["email"];
+                $_SESSION["phone"] = $pending["phone"];
+                unset($_SESSION["pending_login"]);
+                header("Location: parent-dashboard.php");
                 exit;
             } else {
-                //set message if password is wrong
-                $message = "Wrong password.";
+                $message = "Incorrect password.";
+                $activeStep = "parent";
             }
+            $stmt->close();
+        }
+    }
+    elseif ($step == "child_login") {
+        $pin = $_POST["pin"] ?? "";
+        $pending = $_SESSION["pending_login"] ?? null;
+        if (!$pending || $pending["role"] !== "CHILD") {
+            $message = "Please enter your account details again.";
+            $activeStep = "identify";
         } else {
-            //set message is email not found in database
-            $message = "Email not found.";
+            $sql = "SELECT pin_hash FROM children WHERE child_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $pending["child_id"]);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+            if ($row && password_verify($pin, $row["pin_hash"])) {
+                $sql = "INSERT INTO approval_requests
+                        (child_id, parent_id, expires_at)
+                        VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 60 MINUTE))";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param(
+                    "ii",
+                    $pending["child_id"],
+                    $pending["parent_id"]
+                );
+                $stmt->execute();
+                $_SESSION["pending_approval_request"] = $stmt->insert_id;
+                unset($_SESSION["pending_login"]);
+                $activeStep = "approval";
+            } else {
+                $message = "Incorrect PIN.";
+                $activeStep = "child";
+            }
+            $stmt->close();
         }
     }
 }
@@ -72,21 +142,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
 
-        <section class="step active" id="email-step">
-            <h3>Welcome back!</h3>
+        <section class="step <?= $activeStep == 'identify' ? 'active' : '' ?>" id="email-step" <?= $activeStep != 'identify' ? 'hidden' : '' ?>>
+            <h3>Welcome back</h3>
             <form method="post" id="email-form">
                 <label for="email">Email:</label><br>
-                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                <input id="email" name="email" type="email" placeholder="Enter email or username" required>
                 <p class="error" id="email-error"></p>
                 <button type="submit">Continue</button>
             </form>
         </section>
         
-        <section class="step" id="pwsd-step" hidden>
+        <section class="step <?= $activeStep == 'parent' ? 'active' : '' ?>" id="pwsd-step" <?= $activeStep != 'parent' ? 'hidden' : '' ?>>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Parent Account</p>
-            <h3>Welcome back, <span class="user-name-parent" id="user-name-parent"></span></h3>
+            <h3>Welcome back, <?= htmlspecialchars($_SESSION["pending_login"]["name"] ?? "Parent") ?>!</h3>
             <form method="post" id="pswd-form">
+                <input type="hidden" name="step" value="parent_login">
                 <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" placeholder="Enter your password" required>
                 <p class="error" id="password-error"></p>
@@ -95,11 +166,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p class="forgot"><a href="#">Forgot password?</a></p>
         </section>
 
-        <section class="step" id="pin-step" hidden>
+        <section class="step <?= $activeStep == 'child' ? 'active' : '' ?>" id="pin-step" <?= $activeStep != 'child' ? 'hidden' : '' ?>>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Child Account</p>
-            <h3>Welcome back, <span class="user-name-child" id="user-name-child"></span></h3>
+            <h3>Welcome back,  <?= htmlspecialchars($_SESSION["pending_login"]["username"] ?? "Child") ?>!</h3>
             <form method="post" id="pin-form">
+                 <input type="hidden" name="step" value="child_login">
                 <label for="pin">Pin:</label><br>
                 <input id="pin" name="pin" type="password" placeholder="Enter your pin" required>
                 <p class="error" id="pin-error"></p>
@@ -119,9 +191,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p class="error" id="mfa-error"></p>
                 <button type="submit">Verify</button>
             </form>
+             <p class="no-code">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
         </section>
 
-        <section class="step" id="approval-step" hidden>
+        <section class="step <?= $activeStep == 'approval' ? 'active' : '' ?>" id="approval-step" <?= $activeStep != 'approval' ? 'hidden' : '' ?>>
             <button class="back-button" type="button" data-back="email">← Back</button>
             <p>Child Acocunt</p>
             <h2>Waiting for parent approval...</h2>
