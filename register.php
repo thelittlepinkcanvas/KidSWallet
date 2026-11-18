@@ -1,7 +1,4 @@
 <?php
-
-echo "THIS IS THE NEW KIDZWALLET REGISTER PAGE";
-exit;
 session_start();
 include 'connection.php';
 
@@ -10,19 +7,19 @@ $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"] ?? "");
     $email = trim($_POST["email"] ?? "");
-    $phone_no = trim($_POST["phone_no"] ?? "");
+    $phno = trim($_POST["phno"] ?? "");
     $password = $_POST["password"] ?? "";
-    $confirm_password = $_POST["confirm_password"] ?? "";
+    $password2 = $_POST["password2"] ?? "";
 
-    if ($username == "" || $email == "" || $phone_no == "" || $password == "") {
+    if ($username == "" || $email == "" || $phno == "" || $password == "") {
         $message = "Please fill in all fields.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $message = "Please enter a valid email address.";
-    } elseif (!preg_match('/^[0-9]+$/', $phone_no)) {
+    } elseif (!preg_match('/^[0-9]+$/', $phno)) {
         $message = "Phone number must contain numbers only.";
-    } elseif (strlen($password) < 6) {
-        $message = "Password must be at least 6 characters.";
-    } elseif ($password !== $confirm_password) {
+    } elseif (mb_strlen($password, "UTF-8") < 15) {
+        $message = "Password must be at least 15 characters long.";
+    } elseif ($password !== $password2) {
         $message = "Passwords do not match.";
     } else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -37,9 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $sql = "INSERT INTO `parents` (name, email, phone, password_hash) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssss", $username, $email, $phone_no, $hashed_password);
+            $stmt->bind_param("ssss", $username, $email, $phno, $hashed_password);
 
             if ($stmt->execute()) {
+                $parent_id = $conn->insert_id;
+                $_SESSION["parent_id"] = $parent_id;
+                $_SESSION["parent_name"] = $username;
                 header("Location: child-account-create.php");
                 exit;
             } else {
@@ -83,13 +83,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input id="phno" name="phno" type="text" placeholder="Enter phone number without dash" required>
                 <p class="error" id="phno-error"></p>
                 <label for="password">Password:</label><br>
-                <input id="password" name="password" type="password" placeholder="Enter your password" required>
+                <input id="password" name="password" type="password" minlength="15" placeholder="Enter at least 15 characters" required>
                 <p class="error" id="password-error"></p>
                 <label for="password2">Confirm Password:</label><br>
-                <input id="password2" name="password2" type="password" placeholder="Enter your password" required>
+                <input id="password2" name="password2" type="password" minlength="15" placeholder="Re-enter your password" required>
                 <p class="error" id="password-error"></p>
                 <button type="submit">Create account</button>
             </form>
+            <?php if ($message != ""): ?><p class="error"><?= htmlspecialchars($message) ?></p><?php endif; ?>
         </section>
 
         <div class="sign-in">
