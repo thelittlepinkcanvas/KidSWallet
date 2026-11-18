@@ -1,3 +1,51 @@
+<?php
+session_start();
+include 'connection.php';
+
+$message = ""; 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = trim($_POST["email"] ?? "");
+    $password = $_POST["password"] ?? "";
+
+    //if both fields are empty
+    if ($email == "" || $password == "") {
+        $message = "Please enter email and password.";
+    } else {
+        //select data of user where email matches the user input
+        $sql = "SELECT * FROM `user` WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        //if user is found
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+
+            //verify password, if password is correct, the data assigned to session variables
+            if (password_verify($password, $row["password"])) {
+                $_SESSION["user_id"] = $row["user_id"];
+                $_SESSION["username"] = $row["username"];
+                $_SESSION["role"] = $row["role"];
+                $_SESSION["email"] = $row["email"];
+                $_SESSION["phone_no"] = $row["phone_no"];
+
+                //alert displayed if login successful and redirect to home.php
+                echo "<script>alert('Login successful.'); window.location.href='home.php';</script>";
+                exit;
+            } else {
+                //set message if password is wrong
+                $message = "Wrong password.";
+            }
+        } else {
+            //set message is email not found in database
+            $message = "Email not found.";
+        }
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
