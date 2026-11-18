@@ -146,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h3>Welcome back</h3>
             <form method="post" id="email-form">
                 <label for="email">Email:</label><br>
-                <input id="email" name="email" type="email" placeholder="Enter email or username" required>
+                <input id="email" name="identifier" type="text" placeholder="Enter email or username" required>
                 <p class="error" id="email-error"></p>
                 <button type="submit">Continue</button>
             </form>

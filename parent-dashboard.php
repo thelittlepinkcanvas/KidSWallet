@@ -18,7 +18,7 @@
                 <li>Transactions</li>
                 <li>Manage children</li>
                 <li>Your account</li>
-                <li><a href="#" onclick="return confirm('Are you sure you want to log out?')" id="logout">Logout</a></li>
+                <li><a href="logout.php" onclick="return confirm('Are you sure you want to log out?')" id="logout">Logout</a></li>
             </ul>
         </nav>
     </header>
