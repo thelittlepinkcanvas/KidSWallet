@@ -71,37 +71,5 @@ document.addEventListener("DOMContentLoaded", () => {
             showStep("mfa", 2);
         });
     }
-    const mfaForm = document.getElementById("mfa-form");
-
-    if (mfaForm) {
-        mfaForm.addEventListener("submit", (event) => {
-
-            event.preventDefault();
-
-            const code = mfaInput.value.trim();
-
-            mfaError.textContent = "";
-
-            if (!/^\d{6}$/.test(code)) {
-                mfaError.textContent =
-                    "Please enter a valid 6-digit code.";
-                return;
-            }
-
-            mfaError.textContent =
-                "Demo mode: Actual MFA verification is not connected yet.";
-        });
-    }
-    const resendButton = document.getElementById("resend-code");
-
-    if (resendButton) {
-        resendButton.addEventListener("click", (event) => {
-            event.preventDefault();
-
-            mfaError.textContent =
-                "Demo mode: No verification email has been sent.";
-        });
-    }
-    //remove this whole block
 
 });

@@ -102,3 +102,13 @@ button:hover{
     font-size: 14px;
     margin-top:1%;
 }
+
+.back-button{
+    color:black;
+    text-decoration: none;
+}
+
+.forgot, .no-code{
+    text-align: center;
+    margin-bottom: 2%;
+}

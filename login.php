@@ -72,6 +72,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->close();
         }
     }
+    elseif ($step == "mfa_verify") { //REMOVE THIS DURING MFA IMPLEMENTATION
+        $code = $_POST["mfa-code"] ?? "";
+        $pending = $_SESSION["pending_login"] ?? null;
+
+        if (!$pending || $pending["role"] !== "PARENT") {
+            $message = "Please enter your account details again.";
+            $activeStep = "identify";
+
+        } elseif (preg_match('/^[0-9]{6}$/', $code)) {
+            session_regenerate_id(true);
+            $_SESSION["user_id"] = $pending["parent_id"];
+            $_SESSION["role"] = "PARENT";
+            $_SESSION["email"] = $pending["email"];
+            $_SESSION["phone"] = $pending["phone"];
+            unset($_SESSION["pending_login"]);
+            header("Location: parent-dashboard.php");
+            exit;
+
+        } else {
+            $message = "Please enter a valid 6-digit code.";
+            $activeStep = "mfa";
+        }
+    }
     elseif ($step == "child_login") {
         $pin = $_POST["pin"] ?? "";
         $pending = $_SESSION["pending_login"] ?? null;
@@ -144,11 +167,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p class="error" id="email-error"></p>
                 <button type="submit">Continue</button>
             </form>
+            <div class="sign-up">
+                <p>No account? <a href="register.php">Sign up here!</a></p>
+            </div>
         </section>
         
         <section class="step <?= $activeStep == 'parent' ? 'active' : '' ?>" id="pwsd-step" <?= $activeStep != 'parent' ? 'hidden' : '' ?>>
-            <button class="back-button" type="button" data-back="email">← Back</button>
-            <p>Parent Account</p>
+            <a href="#" class="back-button" data-back="email">← Back</a>
             <h3>Welcome back, <?= htmlspecialchars($_SESSION["pending_login"]["name"] ?? "Parent") ?>!</h3>
             <form method="post" id="pswd-form">
                 <input type="hidden" name="step" value="parent_login">
@@ -161,8 +186,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </section>
 
         <section class="step <?= $activeStep == 'child' ? 'active' : '' ?>" id="pin-step" <?= $activeStep != 'child' ? 'hidden' : '' ?>>
-            <button class="back-button" type="button" data-back="email">← Back</button>
-            <p>Child Account</p>
+            <a href="#" class="back-button" data-back="email">← Back</a>
             <h3>Welcome back,  <?= htmlspecialchars($_SESSION["pending_login"]["username"] ?? "Child") ?>!</h3>
             <form method="post" id="pin-form">
                  <input type="hidden" name="step" value="child_login">
@@ -175,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </section>
         
        <section class="step <?= $activeStep == 'mfa' ? 'active' : '' ?>" id="mfa-step" <?= $activeStep != 'mfa' ? 'hidden' : '' ?>>
-            <button class="back-button" type="button" data-back="email">← Back</button>
+            <a href="#" class="back-button" data-back="email">← Back</a>
             <p>Parent Acocunt</p>
             <h3>Verify it's you.</h3>
             <p class="subheading">Enter the verification code sent to your email.</p>
@@ -190,14 +214,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </section>
 
         <section class="step <?= $activeStep == 'approval' ? 'active' : '' ?>" id="approval-step" <?= $activeStep != 'approval' ? 'hidden' : '' ?>>
-            <button class="back-button" type="button" data-back="email">← Back</button>
+            <a href="#" class="back-button" data-back="email">← Back</a>
             <p>Child Acocunt</p>
             <h2>Waiting for parent approval...</h2>
         </section>
-
-        <div class="sign-up">
-            <p>No account? <a href="register.php">Sign up here!</a></p>
-        </div>
 
     </main>
 </body>
