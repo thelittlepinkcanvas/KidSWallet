@@ -1,3 +1,19 @@
+<?php
+session_start();
+include 'connection.php';
+
+/*RBAC*/
+if (!isset($_SESSION["child_id"]) || ($_SESSION["role"] ?? "") !== "CHILD") {
+    header("Location: login.php");
+    exit;
+}
+
+$child_id = $_SESSION["child_id"];
+$message = "";
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
