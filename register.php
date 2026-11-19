@@ -3,6 +3,11 @@ session_start();
 include 'connection.php';
 
 $message = "";
+$name_error = "";
+$email_error = "";
+$phno_error = "";
+$password_error = "";
+$password2_error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST["username"] ?? "");
@@ -11,17 +16,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"] ?? "";
     $password2 = $_POST["password2"] ?? "";
 
-    if ($username == "" || $email == "" || $phno == "" || $password == "") {
+    if ($username == "" || $email == "" || $phno == "" || $password == "" || $password2 ==""){
         $message = "Please fill in all fields.";
+    }elseif ($username == "") {
+        $name_error = "Please enter your name.";
+    } elseif ($email == "") {
+        $email_error = "Please enter your email.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = "Please enter a valid email address.";
+        $email_error = "Please enter a valid email address.";
+    } elseif ($phno == "") {
+        $phno_error = "Please enter your phone number.";
     } elseif (!preg_match('/^[0-9]+$/', $phno)) {
-        $message = "Phone number must contain numbers only.";
+        $phno_error = "Phone number must contain numbers only.";
+    } elseif ($password == "") {
+        $password_error = "Please enter a password.";
     } elseif (mb_strlen($password, "UTF-8") < 15) {
-        $message = "Password must be at least 15 characters long.";
+        $password_error = "Password must be at least 15 characters long.";
+    } elseif ($password2 == "") {
+        $password2_error = "Please confirm your password.";
     } elseif ($password !== $password2) {
-        $message = "Passwords do not match.";
-    } else {
+        $password2_error = "Passwords do not match.";
+    }else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $check_sql = "SELECT parent_id FROM `parents` WHERE email = ?";
         $check_stmt = $conn->prepare($check_sql);
@@ -30,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $check_result = $check_stmt->get_result();
 
         if ($check_result->num_rows > 0) {
-            $message = "This email is already registered.";
+            $email_error = "This email is already registered.";
         } else {
             $sql = "INSERT INTO `parents` (name, email, phone, password_hash) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
@@ -75,26 +90,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form method="post" id="signup-form">
                 <label for="username">Name:</label><br>
                 <input id="username" name="username" type="text" placeholder="Example: John Doe" required>
-                <p class="error" id="name-error"></p>
+                <p class="error"><?= htmlspecialchars($name_error) ?></p>
                 <label for="email">Email:</label><br>
                 <input id="email" name="email" type="email" placeholder="you@example.com" required>
-                <p class="error" id="email-error"></p>
+                <p class="error"><?= htmlspecialchars($email_error) ?></p>
                 <label for="phno">Phone Number:</label><br>
                 <input id="phno" name="phno" type="text" placeholder="Enter phone number without dash" required>
-                <p class="error" id="phno-error"></p>
+                <p class="error"><?= htmlspecialchars($phno_error) ?></p>
                 <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" minlength="15" placeholder="Enter at least 15 characters" required>
-                <p class="error" id="password-error"></p>
+                <p class="error"><?= htmlspecialchars($password_error) ?></p>
                 <label for="password2">Confirm Password:</label><br>
                 <input id="password2" name="password2" type="password" minlength="15" placeholder="Re-enter your password" required>
-                <p class="error" id="password-error"></p>
+                <p class="error"><?= htmlspecialchars($password2_error) ?></p>
                 <button type="submit">Create account</button>
             </form>
             <?php if ($message != ""): ?><p class="error"><?= htmlspecialchars($message) ?></p><?php endif; ?>
         </section>
 
         <div class="sign-in">
-            <p>Already have an account? <a href="login.html">Login here!</a></p>
+            <p>Already have an account? <a href="login.php">Login here!</a></p>
         </div>
 
     </main>
