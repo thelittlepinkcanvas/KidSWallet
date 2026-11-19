@@ -86,6 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["user_id"] = $pending["parent_id"];
             $_SESSION["parent_id"] = $pending["parent_id"];
             $_SESSION["role"] = "PARENT";
+            $_SESSION["parent_name"] = $pending["name"];
             $_SESSION["email"] = $pending["email"];
             $_SESSION["phone"] = $pending["phone"];
             unset($_SESSION["pending_login"]);
