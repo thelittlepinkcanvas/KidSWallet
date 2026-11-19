@@ -7,7 +7,33 @@ if (!isset($_SESSION["child_id"]) || ($_SESSION["role"] ?? "") !== "CHILD") {
     header("Location: login.php");
     exit;
 }
+$child_id = $_SESSION["child_id"];
 $child_name = $_SESSION["child_name"];
+
+$sql = "SELECT balance
+        FROM wallets
+        WHERE child_id = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $child_id);
+$stmt->execute();
+
+$wallet = $stmt->get_result()->fetch_assoc();
+$balance = $wallet["balance"] ?? 0;
+$sql = "SELECT t.transaction_type,t.amount,t.description,t.created_at,p.name FROM transactions t LEFT JOIN parents p ON t.parent_id = p.parent_id WHERE t.child_id = ? ORDER BY t.created_at DESC LIMIT 5";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $child_id);
+$stmt->execute();
+
+$transactions = $stmt->get_result();
+
+$sql = "SELECT SUM(amount) AS total_spending FROM transactions WHERE child_id = ? AND transaction_type = 'PAYMENT' AND created_at >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND created_at < DATE_ADD( DATE_FORMAT(CURDATE(), '%Y-%m-01'), INTERVAL 1 MONTH )";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $child_id);
+$stmt->execute();
+$spending_result = $stmt->get_result()->fetch_assoc();
+$total_spending = $spending_result["total_spending"] ?? 0;
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +68,7 @@ $child_name = $_SESSION["child_name"];
                 </div>
                 <div class="balance">
                     <img src="image/wallet.png">
-                    <h3>RM 50.00</h3>
+                    <h3>RM <?= $balance ?></h3>
                 </div>
             </div>
             <div class="cont2">
@@ -50,20 +76,31 @@ $child_name = $_SESSION["child_name"];
                     <h3>Transaction history</h3>
                 </div>
                 <hr>
-                <div class="history">
-                    <div class="desc">
-                        <p id="dates">23/10/2026</p>
-                        <p>Received from March Rosebloom</p>
-                    </div>
-                    <p class="amount">+ RM 20.00</p>
-                </div>
-                <div class="history">
-                    <div class="desc">
-                        <p id="dates">23/10/2026</p>
-                        <p>Paid to rose cafe</p>
-                    </div>
-                    <p class="amount">- RM 10.00</p>
-                </div>
+                <?php if ($transactions->num_rows > 0): ?>
+                    <?php while ($transaction = $transactions->fetch_assoc()): ?>
+                        <div class="history">
+                            <div class="desc">
+                                <p id="dates"><?= date("d/m/Y", strtotime($transaction["created_at"])) ?></p>
+                                <p>
+                                    <?php if ($transaction["transaction_type"] == "TOP_UP"): ?>
+                                        Received from <?= htmlspecialchars($transaction["parent_name"] ?? "Parent") ?>
+                                    <?php elseif ($transaction["transaction_type"] == "PAYMENT"): ?>
+                                        Paid to <?= htmlspecialchars($transaction["description"] ?? "Shop") ?>
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+                            <p class="amount">
+                                <?php if ($transaction["transaction_type"] == "TOP_UP"): ?>
+                                    + RM <?= number_format((float)$transaction["amount"], 2) ?>
+                                <?php elseif ($transaction["transaction_type"] == "PAYMENT"): ?>
+                                    - RM <?= number_format((float)$transaction["amount"], 2) ?>
+                                <?php endif; ?>
+                            </p>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>No transactions yet.</p>
+                <?php endif; ?>
                 <a href="#" class="viewall">View All</a>
             </div>
         </div>
@@ -74,7 +111,7 @@ $child_name = $_SESSION["child_name"];
                     <p>October 2026</p>
                 </div>
                 <div class="spending">
-                   <h2>RM 50.00</h2>
+                   <h2>RM <?=$total_spending?></h2>
                 </div>
             </div>
             <div class="cont4">
