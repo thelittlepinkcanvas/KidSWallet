@@ -103,9 +103,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="password2">Confirm Password:</label><br>
                 <input id="password2" name="password2" type="password" minlength="15" placeholder="Re-enter your password" required>
                 <p class="error"><?= htmlspecialchars($password2_error) ?></p>
+                <?php if ($message != ""): ?><p class="error"><?= htmlspecialchars($message) ?></p><?php endif; ?>
                 <button type="submit">Create account</button>
             </form>
-            <?php if ($message != ""): ?><p class="error"><?= htmlspecialchars($message) ?></p><?php endif; ?>
         </section>
 
         <div class="sign-in">
