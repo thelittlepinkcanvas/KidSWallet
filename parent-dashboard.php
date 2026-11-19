@@ -2,7 +2,8 @@
 session_start();
 include 'connection.php';
 
-if (!isset($_SESSION["parent_id"])) {
+/*RBAC*/
+if (!isset($_SESSION["parent_id"] || ($_SESSION["role"] ?? "") !== "PARENT")) {
     header("Location: login.php");
     exit;
 }
@@ -17,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $status = ($action == "approve") ? "APPROVED" : "REJECTED";
         $sql = "UPDATE approval_requests
                 SET status = ?, responded_at = NOW()
-                WHERE request_id = ?
+                WHERE request_id = ? /*tampering protection */
                 AND parent_id = ?
                 AND status = 'PENDING'
                 AND expires_at > NOW()";
@@ -47,6 +48,12 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $parent_id);
 $stmt->execute();
 $requests = $stmt->get_result();
+
+$sql = "SELECT t.*, c.child_name FROM transactions t JOIN children c ON t.child_id = c.child_id WHERE c.parent_id = ? ORDER BY t.created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $parent_id);
+$stmt->execute();
+$transactions = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>

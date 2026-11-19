@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif ($password !== $password2) {
         $password2_error = "Passwords do not match.";
     }else {
+        /*secure password storage*/
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         $check_sql = "SELECT parent_id FROM `parents` WHERE email = ?";
         $check_stmt = $conn->prepare($check_sql);
