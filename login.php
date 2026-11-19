@@ -40,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "role" => "CHILD",
                         "child_id" => $row["child_id"],
                         "parent_id" => $row["parent_id"],
+                        "childName" => $row["child_name"],
                         "username" => $row["username"]
                     ];
                     $activeStep = "child";
@@ -188,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <section class="step <?= $activeStep == 'child' ? 'active' : '' ?>" id="pin-step" <?= $activeStep != 'child' ? 'hidden' : '' ?>>
             <a href="#" class="back-button" data-back="email">← Back</a>
-            <h3>Welcome back,  <?= htmlspecialchars($_SESSION["pending_login"]["username"] ?? "Child") ?>!</h3>
+            <h3>Welcome back,  <?= htmlspecialchars($_SESSION["pending_login"]["childName"] ?? "Child") ?>!</h3>
             <form method="post" id="pin-form">
                  <input type="hidden" name="step" value="child_login">
                 <label for="pin">Pin:</label><br>
