@@ -12,6 +12,7 @@ if (!isset($_SESSION["pending_approval_request"])) {
 if (($_SESSION["role"] ?? "") === "CHILD"
     && isset($_SESSION["child_id"])) {
     echo json_encode(["status" => "APPROVED"]);
+    unset($_SESSION["pending_approval_request"]);
     exit;
 }
 
