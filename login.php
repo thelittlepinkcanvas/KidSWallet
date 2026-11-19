@@ -83,6 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (preg_match('/^[0-9]{6}$/', $code)) {
             session_regenerate_id(true);
             $_SESSION["user_id"] = $pending["parent_id"];
+            $_SESSION["parent_id"] = $pending["parent_id"];
             $_SESSION["role"] = "PARENT";
             $_SESSION["email"] = $pending["email"];
             $_SESSION["phone"] = $pending["phone"];

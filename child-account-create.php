@@ -2,6 +2,11 @@
 session_start();
 include 'connection.php';
 
+if (!isset($_SESSION["parent_id"])) {
+    header("Location: login.php");
+    exit;
+}
+
 $message = "";
 $name_error = "";
 $username_error = "";
@@ -39,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $username_error = "This username is already taken.";
         } else {
             $hashed_pin = password_hash($pin, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO children (parent_id, name, username, pin_hash) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO children (parent_id, child_name, username, pin_hash) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("isss", $_SESSION["parent_id"], $childName, $username, $hashed_pin);
             if ($stmt->execute()) {
