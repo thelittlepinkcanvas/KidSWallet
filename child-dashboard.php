@@ -7,11 +7,7 @@ if (!isset($_SESSION["child_id"]) || ($_SESSION["role"] ?? "") !== "CHILD") {
     header("Location: login.php");
     exit;
 }
-
-$child_id = $_SESSION["child_id"];
-$message = "";
-
-
+$child_name = $_SESSION["child_name"];
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +33,7 @@ $message = "";
             </ul>
         </nav>
     </header>
-    <h1>Welcome, <span class="user-name-child"></span></h1>
+    <h1>Welcome, <?= htmlspecialchars($child_name) ?>!</h1>
     <main class="dashboard">
         <div class="left-cont">
             <div class="cont1">
