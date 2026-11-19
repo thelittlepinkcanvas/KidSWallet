@@ -3,48 +3,52 @@ session_start();
 include 'connection.php';
 
 $message = "";
+$name_error = "";
+$username_error = "";
+$pin_error = "";
+$pin2_error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST["ChildName"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $phno = trim($_POST["phno"] ?? "");
-    $password = $_POST["password"] ?? "";
-    $password2 = $_POST["password2"] ?? "";
+    $childName = trim($_POST["ChildName"] ?? "");
+    $username = trim($_POST["username"] ?? "");
+    $pin = $_POST["pin"] ?? "";
+    $pin2 = $_POST["pin2"] ?? "";
 
-    if ($username == "" || $email == "" || $phno == "" || $password == "") {
+    if ($childName == "" || $username == "" || $pin == "" || $pin2 == "") {
         $message = "Please fill in all fields.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $message = "Please enter a valid email address.";
-    } elseif (!preg_match('/^[0-9]+$/', $phno)) {
-        $message = "Phone number must contain numbers only.";
-    } elseif (mb_strlen($password, "UTF-8") < 15) {
-        $message = "Password must be at least 15 characters long.";
-    } elseif ($password !== $password2) {
-        $message = "Passwords do not match.";
+    } elseif ($childName == "") {
+        $name_error = "Please enter your child's name.";
+    } elseif ($username == "") {
+        $username_error = "Please enter your username.";
+    } elseif (!preg_match('/^[a-zA-Z0-9._]+$/', $username)) {
+        $username_error = "Username cannot contain spaces or special characters.";
+    }elseif ($pin == "") {
+        $pin_error = "Please enter a pin.";
+    } elseif ($pin2 == "") {
+        $pin2_error = "Please confirm your pin.";
+    } elseif ($pin !== $pin2) {
+        $pin2_error = "Pins do not match.";
     } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $check_sql = "SELECT parent_id FROM `parents` WHERE email = ?";
+        $check_sql = "SELECT child_id FROM children WHERE username = ?";
         $check_stmt = $conn->prepare($check_sql);
-        $check_stmt->bind_param("s", $email);
+        $check_stmt->bind_param("s", $username);
         $check_stmt->execute();
         $check_result = $check_stmt->get_result();
 
         if ($check_result->num_rows > 0) {
-            $message = "This email is already registered.";
+            $username_error = "This username is already taken.";
         } else {
-            $sql = "INSERT INTO `parents` (name, email, phone, password_hash) VALUES (?, ?, ?, ?)";
+            $hashed_pin = password_hash($pin, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO children (parent_id, name, username, pin_hash) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssss", $username, $email, $phno, $hashed_password);
-
+            $stmt->bind_param("isss", $_SESSION["parent_id"], $childName, $username, $hashed_pin);
             if ($stmt->execute()) {
-                $parent_id = $conn->insert_id;
-                $_SESSION["parent_id"] = $parent_id;
-                $_SESSION["parent_name"] = $username;
-                header("Location: child-account-create.php");
+                header("Location: parent-dashboard.php");
                 exit;
             } else {
-                $message = "Registration failed. Please try again.";
+                $message = "Account creation failed. Please try again.";
             }
+            $stmt->close();
         }
     }
 }
@@ -74,16 +78,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form method="post" id="create-form">
                 <label for="childName">Child name:</label><br>
                 <input id="childName" name="ChildName" type="text" placeholder="Example: John Doe" required>
-                <p class="error" id="name-error"></p>
+                <p class="error"><?= htmlspecialchars($name_error) ?></p>
                 <label for="username">Username:</label><br>
                 <input id="username" name="username" type="text" placeholder="Example: john_doe" required>
-                <p class="error" id="username-error"></p>
+                <p class="error"><?= htmlspecialchars($username_error) ?></p>
                 <label for="pin">6 digit pin:</label><br>
                 <input id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Enter 6-digit pin" required>
-                <p class="error" id="pin-error"></p>
+                <p class="error"><?= htmlspecialchars($pin_error) ?></p>
                 <label for="pin2">Confirm Pin:</label><br>
                 <input id="pin2" name="pin2" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Re-enter pin" required>
-                <p class="error" id="pin2-error"></p>
+                <p class="error"><?= htmlspecialchars($pin2_error) ?></p>
+                <?php if ($message != ""): ?><p class="error"><?= htmlspecialchars($message) ?></p><?php endif; ?>
                 <div id="btn-cont">
                     <button type="submit">Create</button>
                     <button type="button" id="later-btn">Later</button>
