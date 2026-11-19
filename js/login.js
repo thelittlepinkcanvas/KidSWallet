@@ -73,3 +73,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 });
+
+function checkApproval() {
+    const approvalStep = document.getElementById("approval-step");
+
+    if (!approvalStep || approvalStep.hidden) {
+        return;
+    }
+
+    fetch("check-approval.php", { cache: "no-store" })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "APPROVED") {
+                window.location.href = "child-dashboard.php";
+            }
+            else if (data.status === "REJECTED") {
+                alert("Your parent rejected the login request.");
+                window.location.href = "login.php";
+            }
+            else if (data.status === "EXPIRED") {
+                alert("Your login request has expired.");
+                window.location.href = "login.php";
+            }
+            else if (data.status === "ERROR") {
+                alert("Something went wrong. Please log in again.");
+                window.location.href = "login.php";
+            }
+        })
+        .catch(error => console.log("Approval check error:", error));
+}
+setInterval(checkApproval, 3000);
