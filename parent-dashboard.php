@@ -3,7 +3,7 @@ session_start();
 include 'connection.php';
 
 /*RBAC*/
-if (!isset($_SESSION["parent_id"] || ($_SESSION["role"] ?? "") !== "PARENT")) {
+if (!isset($_SESSION["parent_id"]) || ($_SESSION["role"] ?? "") !== "PARENT") {
     header("Location: login.php");
     exit;
 }
@@ -49,7 +49,14 @@ $stmt->bind_param("i", $parent_id);
 $stmt->execute();
 $requests = $stmt->get_result();
 
-$sql = "SELECT t.*, c.child_name FROM transactions t JOIN children c ON t.child_id = c.child_id WHERE c.parent_id = ? ORDER BY t.created_at DESC";
+$sql = "SELECT c.child_id, c.child_name, w.balance FROM children c LEFT JOIN wallets w ON c.child_id = w.child_id WHERE c.parent_id = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $parent_id);
+$stmt->execute();
+$children = $stmt->get_result();
+
+$sql = "SELECT t.transaction_id, t.transaction_type,t.amount, t.description, t.created_at,c.child_name FROM transactions t JOIN children c ON t.child_id = c.child_id WHERE c.parent_id = ? ORDER BY t.created_at DESC LIMIT 5";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $parent_id);
 $stmt->execute();
@@ -111,28 +118,41 @@ $transactions = $stmt->get_result();
                 <a href="child-account-create.php" class="addChild">+ Add child account</a>
             </div>
             <hr>
-            <div class="child">
-                <p class="childName">Alice Rosebloom</p>
-                <p>Money spent: RM 20.00</p>
-            </div>
-            <div class="child">
-                <p class="childName">Ace Rosebloom</p>
-                <p>Money spent: RM 10.00</p>
-            </div>
+            <?php if ($children->num_rows > 0): ?>
+                <?php while ($child = $children->fetch_assoc()): ?>
+                    <div class="child">
+                        <p class="childName"><?= htmlspecialchars($child["child_name"]) ?></p>
+                        <p>Wallet balance: RM<?= number_format((float)($child["balance"] ?? 0), 2) ?></p>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p>You have no child accounts yet.</p>
+            <?php endif; ?>
         </div>
         <div class="cont2">
             <div class="cont2-head">
                 <h3>Transaction history</h3>
             </div>
             <hr>
-            <div class="history">
-                <p id="dates">23/10/2026</p>
-                <p>Transferred RM20.00 to Alice Rosebloom</p>
-            </div>
-            <div class="history">
-                <p id="dates">23/10/2026</p>
-                <p>Transferred RM10.00 to Ace Rosebloom</p>
-            </div>
+            <?php if ($transactions->num_rows > 0): ?>
+                <?php while ($transaction = $transactions->fetch_assoc()): ?>
+                    <div class="history">
+                        <p class="dates"><?= date("d/m/Y", strtotime($transaction["created_at"])) ?></p>
+                        <p>
+                            <?php if ($transaction["transaction_type"] == "TOP_UP"): ?>
+                                Added RM<?= number_format($transaction["amount"], 2) ?>
+                                to <?= htmlspecialchars($transaction["child_name"]) ?>
+                            <?php elseif ($transaction["transaction_type"] == "PAYMENT"): ?>
+                                <?= htmlspecialchars($transaction["child_name"]) ?>
+                                spent RM<?= number_format($transaction["amount"], 2) ?>
+                                - <?= htmlspecialchars($transaction["description"]) ?>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+                <?php endwhile; ?>
+            <?php else: ?>
+    <p>No transactions yet.</p>
+<?php endif; ?>
             <a href="#" class="viewall">View All</a>
         </div>
     </main>
