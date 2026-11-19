@@ -122,7 +122,7 @@ $total_spending = $spending_result["total_spending"] ?? 0;
                 <hr>
                 <div class="budget">
                     <h2>RM 150.00</h2>
-                    <p class="spending-left">RM 100.00 left</p>
+                    <p class="spending-left">RM 130.00 left</p>
                 </div>
             </div>
         </div>
