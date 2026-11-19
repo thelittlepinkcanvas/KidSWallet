@@ -89,13 +89,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <section class="signup-body" id="signup-body">
             <form method="post" id="signup-form">
                 <label for="username">Name:</label><br>
-                <input id="username" name="username" type="text" placeholder="Example: John Doe" required>
+                <input id="username" name="username" type="text" placeholder="Example: John Doe" value="<?= htmlspecialchars($name ?? '') ?>" required>
                 <p class="error"><?= htmlspecialchars($name_error) ?></p>
                 <label for="email">Email:</label><br>
-                <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                <input id="email" name="email" type="email" placeholder="you@example.com" value="<?= htmlspecialchars($email ?? '') ?>" required>
                 <p class="error"><?= htmlspecialchars($email_error) ?></p>
                 <label for="phno">Phone Number:</label><br>
-                <input id="phno" name="phno" type="text" placeholder="Enter phone number without dash" required>
+                <input id="phno" name="phno" type="text" placeholder="Enter phone number without dash" value="<?= htmlspecialchars($phno ?? '') ?>" required>
                 <p class="error"><?= htmlspecialchars($phno_error) ?></p>
                 <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" minlength="15" placeholder="Enter at least 15 characters" required>

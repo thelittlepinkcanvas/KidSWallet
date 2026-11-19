@@ -77,10 +77,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <section class="create-body" id="create-body">
             <form method="post" id="create-form">
                 <label for="childName">Child name:</label><br>
-                <input id="childName" name="ChildName" type="text" placeholder="Example: John Doe" required>
+                <input id="childName" name="ChildName" type="text" placeholder="Example: John Doe" value="<?= htmlspecialchars($childName ?? '') ?>" required>
                 <p class="error"><?= htmlspecialchars($name_error) ?></p>
                 <label for="username">Username:</label><br>
-                <input id="username" name="username" type="text" placeholder="Example: john_doe" required>
+                <input id="username" name="username" type="text" placeholder="Example: john_doe" value="<?= htmlspecialchars($username ?? '') ?>" required>
                 <p class="error"><?= htmlspecialchars($username_error) ?></p>
                 <label for="pin">6 digit pin:</label><br>
                 <input id="pin" name="pin" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Enter 6-digit pin" required>
