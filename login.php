@@ -167,7 +167,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="email">Email:</label><br>
                 <input type="hidden" name="step" value="identify">
                 <input id="email" name="identifier" type="text" placeholder="Enter email or username" required>
-                <p class="error" id="email-error"></p>
+                <p class="error"><?= htmlspecialchars($message) ?></p>
                 <button type="submit">Continue</button>
             </form>
             <div class="sign-up">
@@ -182,7 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="hidden" name="step" value="parent_login">
                 <label for="password">Password:</label><br>
                 <input id="password" name="password" type="password" placeholder="Enter your password" required>
-                <p class="error" id="password-error"></p>
+                <p class="error"><?= htmlspecialchars($message) ?></p>
                 <button type="submit">Sign in</button>
             </form>
             <p class="forgot"><a href="#">Forgot password?</a></p>
@@ -195,7 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  <input type="hidden" name="step" value="child_login">
                 <label for="pin">Pin:</label><br>
                 <input id="pin" name="pin" type="password" placeholder="Enter your pin" required>
-                <p class="error" id="pin-error"></p>
+                <p class="error"><?= htmlspecialchars($message) ?></p>
                 <button type="submit">Sign in</button>
             </form>
             <p class="forgot">Forgot pin? Contact your parents for the pin.</p>
@@ -210,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="hidden" name="step" value="mfa_verify">
                 <label for="mfa-code">Verification code:</label><br>
                 <input id="mfa-code" name="mfa-code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="0 0 0 0 0 0" required>
-                <p class="error" id="mfa-error"></p>
+                <p class="error"><?= htmlspecialchars($message) ?></p>
                 <button type="submit">Verify</button>
             </form>
              <p class="no-code">Didn't receive a code? <a href="#" id="resend-code">Resend code</a></p>
