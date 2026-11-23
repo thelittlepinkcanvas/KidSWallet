@@ -31,10 +31,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 $request = $result->fetch_assoc();
 
+/*output encoding*/
 if (!$request) {
     echo json_encode(["status" => "ERROR"]);
     exit;
 }
+
 if ($request["status"] == "APPROVED") {
     session_regenerate_id(true);
     $_SESSION["child_id"] = $request["child_id"];

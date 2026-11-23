@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"] ?? "";
     $password2 = $_POST["password2"] ?? "";
 
+    /*input validation */
     if ($username == "" || $email == "" || $phno == "" || $password == "" || $password2 ==""){
         $message = "Please fill in all fields.";
     }elseif ($username == "") {

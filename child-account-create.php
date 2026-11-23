@@ -35,6 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $pin2_error = "Pins do not match.";
     } else {
         $check_sql = "SELECT child_id FROM children WHERE username = ?";
+        /*parameterized input */
         $check_stmt = $conn->prepare($check_sql);
         $check_stmt->bind_param("s", $username);
         $check_stmt->execute();
