@@ -10,10 +10,7 @@ if (!isset($_SESSION["child_id"]) || ($_SESSION["role"] ?? "") !== "CHILD") {
 $child_id = $_SESSION["child_id"];
 $child_name = $_SESSION["child_name"];
 
-$sql = "SELECT balance
-        FROM wallets
-        WHERE child_id = ?";
-
+$sql = "SELECT balance FROM wallets WHERE child_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $child_id);
 $stmt->execute();

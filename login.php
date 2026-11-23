@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 include 'connection.php';
@@ -64,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute();
             $result = $stmt->get_result();
             $row = $result->fetch_assoc();
-            if ($row && password_verify($password, $row["password_hash"])) { //CHANGE THIS WHEN IMPLEMENTING MFA, THIS IS JUST A DEMO
+            if ($row && password_verify($password, $row["password_hash"])) {
                 $activeStep = "mfa";
             } else {
                 $message = "Incorrect password.";
@@ -73,7 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->close();
         }
     }
-    elseif ($step == "mfa_verify") { //REMOVE THIS DURING MFA IMPLEMENTATION
+    elseif ($step == "mfa_verify") { //MFA simulation that accepts any 6 digit value
         $code = $_POST["mfa-code"] ?? "";
         $pending = $_SESSION["pending_login"] ?? null;
 

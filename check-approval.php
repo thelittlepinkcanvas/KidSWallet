@@ -9,8 +9,7 @@ if (!isset($_SESSION["pending_approval_request"])) {
     exit;
 }
 
-if (($_SESSION["role"] ?? "") === "CHILD"
-    && isset($_SESSION["child_id"])) {
+if (($_SESSION["role"] ?? "") === "CHILD" && isset($_SESSION["child_id"])) {
     echo json_encode(["status" => "APPROVED"]);
     unset($_SESSION["pending_approval_request"]);
     exit;
@@ -18,9 +17,7 @@ if (($_SESSION["role"] ?? "") === "CHILD"
 
 $request_id = $_SESSION["pending_approval_request"];
 
-$sql = "SELECT ar.status, ar.expires_at,
-               ar.child_id, ar.parent_id,
-               c.username, c.child_name
+$sql = "SELECT ar.status, ar.expires_at,ar.child_id, ar.parent_id,c.username, c.child_name
         FROM approval_requests ar
         JOIN children c ON ar.child_id = c.child_id
         WHERE ar.request_id = ?";
@@ -31,7 +28,6 @@ $stmt->execute();
 $result = $stmt->get_result();
 $request = $result->fetch_assoc();
 
-/*output encoding*/
 if (!$request) {
     echo json_encode(["status" => "ERROR"]);
     exit;
