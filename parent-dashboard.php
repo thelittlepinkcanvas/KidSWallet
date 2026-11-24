@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'connection.php';
+include 'session-timeout.php';
 
 /*RBAC*/
 if (!isset($_SESSION["parent_id"]) || ($_SESSION["role"] ?? "") !== "PARENT") {
