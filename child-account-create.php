@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'connection.php';
+include 'session-timeout.php';
 
 if (!isset($_SESSION["parent_id"])) {
     header("Location: login.php");
