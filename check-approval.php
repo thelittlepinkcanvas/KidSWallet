@@ -40,6 +40,8 @@ if ($request["status"] == "APPROVED") {
     $_SESSION["username"] = $request["username"];
     $_SESSION["child_name"] = $request["child_name"];
     $_SESSION["role"] = "CHILD";
+    $_SESSION["login_time"] = time();
+    $_SESSION["last_activity"] = time();
     unset($_SESSION["pending_approval_request"]);
     echo json_encode(["status" => "APPROVED"]);
 } elseif ($request["status"] == "REJECTED") {

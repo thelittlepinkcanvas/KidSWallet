@@ -88,6 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["parent_name"] = $pending["name"];
             $_SESSION["email"] = $pending["email"];
             $_SESSION["phone"] = $pending["phone"];
+            $_SESSION["login_time"] = time();
+            $_SESSION["last_activity"] = time();
             unset($_SESSION["pending_login"]);
             header("Location: parent-dashboard.php");
             exit;
