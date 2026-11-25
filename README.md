@@ -10,11 +10,6 @@ KidSWallet is a smart wallet that allows parents to manage their children's spen
 5. View child dashboard
 6. Wallet balance and transaction history display
 
-
-***Note:***
-- Because this is a prototype, it does not perform actual financial transactions. Wallet and transaction history in the database are dummy data. 
-- This prototype uses a simulated MFA, where it accepts any 6 digit numbers entered. 
-
 ## Technology Used
 
 | Technology | Purpose |
@@ -105,4 +100,6 @@ The system automatically logs out the user after 30 minutes of inactive session.
 
 ## Limitations
 
-1. 
+1. Because this is a prototype, it does not perform actual financial transactions. 
+2. This prototype uses a simulated MFA, where it accepts any 6 digit numbers entered. It does not send real OTPs. 
+3. Wallet balances and transactions are dummy data.
