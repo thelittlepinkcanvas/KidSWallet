@@ -21,6 +21,8 @@ KidSWallet is a smart wallet that allows parents to manage their children's spen
 | MySQL | Database storage |
 | XAMPP | Local Apache and MySQL server |
 | phpmyadmin | Database management |
+| Composer | PHP dependency management |
+| phpdotenv | Loads database configuration from the .env file |
 
 ## System Requirements
 
@@ -28,6 +30,7 @@ Before setting up KidSWallet, the following applications are needed:
 1. XAMPP
 2. Visual Studio Code
 3. A web browser
+4. Composer
 
 ## Setup
 
@@ -39,12 +42,19 @@ Before setting up KidSWallet, the following applications are needed:
 1. Move the KidSWallet folder to the htdocs folder in XAMPP. The path should be as follows:
 `C:\xampp\htdocs\KidSWallet`
 
-**Step 3: Start XAMPP**
+**Step 3: Configure environment variables and install dependencies**
+1. Find `.env.example` file in the KidSWallet folder.
+2. Rename the copied file to `.env`.
+3. Open `.env` and configure the database connection details. 
+4. Open a terminal in the KidSWallet project folder.
+5. Run the following command to install the required PHP dependencies:`composer install`. This installs the dependencies listed in composer.json and composer.lock.
+
+**Step 4: Start XAMPP**
 1. Open XAMPP application
 2. Start Apache
 3. Start MySQL
 
-**Step 4: Create database**
+**Step 5: Create database**
 1. Click "admin" beside MySQL on XAMPP, phpmyadmin will be open in the web browser.
 2. Create a database called "kidswallet". 
 3. Import the SQL file given in sql folder of KidSWallet. 
@@ -62,7 +72,7 @@ The database connection settings are stored in `connection.php`. Because this pr
 
 **2. Environment variables**
 
-The current prototype does not use environment variables. Database connection details are configured directly in `connection.php`. For actual deployment, environment variables can be used to store sensitive configuration values separately from the application source code.
+The prototype uses the vlucas/phpdotenv library to load database configuration from the `.env` file. The required configuration includes the database host, username, password, and database name.The `.env` file is excluded from Git tracking through `.gitignore` to prevent database credentials from being uploaded to the GitHub repository. A `.env.example` file is provided to user for configuring the database connection.
 
 **3. TLS**
 
