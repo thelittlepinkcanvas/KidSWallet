@@ -59,7 +59,7 @@ Before setting up KidSWallet, the following applications are needed:
 1. Go to the web browser and enter the URL: `http://localhost/KidSWallet/login.php`. It should redirect to the KidSWallet login page. 
 2. Create an account through the registration page. If you already have an account, log in.
 
-## Security-related configuration limitations
+## Security-related configuration
 
 **1. Key Storage**
 
@@ -73,4 +73,36 @@ The current prototype does not use environment variables. Database connection de
 
 The prototype runs locally using XAMPP through `http://localhost`, so HTTPS/TLS is not configured.For actual deployment, HTTPS should be enabled using a valid TLS certificate to encrypt communication between the user's browser and the server.
 
+## Security features implemented
 
+**1. Input Validation**
+
+User input entered through registration page and login page are validated before being sent to the database. This prevents attacks such as SQL injection and XSS. For example, the system checks whether the email is in valid format, and names only include alphabetical letters.
+
+**2. Secure Error Handling**
+
+The system displays meaningful error messages to the user without exposing credentials or internal code. For example, `Invalid email format` or `Incorrect password`. 
+
+**3. Role based access control**
+
+Each user is assigned a role `Parent` or `Child` after authentication to redirect them to the correct dashboard. Dashboard pages also checks the role and ID of the user before allowing them to access the dashboard. The system also only establishes child session after parent approves the login request. This prevents elevation of privileges. 
+
+**4. Parameterized queries**
+
+MySQLi prepared statements such as `prepare()` and `bind_param()` are used before sending user input to the database. This prevents SQL injection. 
+
+**5. Secure password storage**
+
+All passwords and pins are hashed using `password_hash()` before being stored in the database to ensure it is not stored as plain text in the database. 
+
+**6. Tampering protection**
+
+IDs are checked before used in SQL query to retrieve data from the database. This prevents the user from accessing other user's data by changing the ID in the URL. For example, `parent_id` is checked before allowing a parent to approve a child's login request to ensure they do not approve another child's request. `child_id` is also checked to ensure wallet data are fetched based on the correct ID rather than the ID the user changed in the URL. 
+
+**7. Session timeout**
+
+The system automatically logs out the user after 30 minutes of inactive session. Absolute timeout will log the user out of all sessions after 8 hours, requiring them to log in again. 
+
+## Limitations
+
+1. 
