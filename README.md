@@ -59,3 +59,18 @@ Before setting up KidSWallet, the following applications are needed:
 1. Go to the web browser and enter the URL: `http://localhost/KidSWallet/login.php`. It should redirect to the KidSWallet login page. 
 2. Create an account through the registration page. If you already have an account, log in.
 
+## Security-related configuration limitations
+
+**1. Key Storage**
+
+The database connection settings are stored in `connection.php`. Because this prototype is only for local development only, it uses the default `root` username and an empty password. However, for actual development, the database should be secured with strong password and access control.
+
+**2. Environment variables**
+
+The current prototype does not use environment variables. Database connection details are configured directly in `connection.php`. For actual deployment, environment variables can be used to store sensitive configuration values separately from the application source code.
+
+**3. TLS**
+
+The prototype runs locally using XAMPP through `http://localhost`, so HTTPS/TLS is not configured.For actual deployment, HTTPS should be enabled using a valid TLS certificate to encrypt communication between the user's browser and the server.
+
+
