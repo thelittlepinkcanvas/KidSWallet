@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <section class="step <?= $activeStep == 'identify' ? 'active' : '' ?>" id="email-step" <?= $activeStep != 'identify' ? 'hidden' : '' ?>>
             <h3>Welcome back</h3>
             <form method="post" id="email-form">
-                <label for="email">Email:</label><br>
+                <label for="email">Email/Username:</label><br>
                 <input type="hidden" name="step" value="identify">
                 <input id="email" name="identifier" type="text" placeholder="Enter email or username" required>
                 <p class="error"><?= htmlspecialchars($message) ?></p>
